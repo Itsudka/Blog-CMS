@@ -1,23 +1,23 @@
-import Header from '@/app/components/Header'
-import { Post } from '@/app/utils/Interface';
-import { client } from '@/sanity/lib/client';
-import { PortableText } from 'next-sanity';
-import { VT323 } from 'next/font/google';
-import Link from 'next/link';
-import React from 'react'
+import Header from "@/app/components/Header";
+import { Post } from "@/app/utils/Interface";
+import { client } from "@/sanity/lib/client";
+import { urlFor } from "@/sanity/lib/image";
+import { PortableText } from "next-sanity";
+import { VT323 } from "next/font/google";
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
 
-const datefont = VT323({weight: "400", subsets: ["latin"]})
+const datefont = VT323({ weight: "400", subsets: ["latin"] });
 
 interface Params {
-    params: {
-        slug: string;
-    }
+  params: {
+    slug: string;
+  };
 }
 
-
-async function getPost(slug:string) {
-
-    const query = `
+async function getPost(slug: string) {
+  const query = `
         *[_type == "post" && slug.current == "${slug}"][0] {
             title,
             slug,
@@ -33,44 +33,53 @@ async function getPost(slug:string) {
         }
     `;
 
-    
-    const post = await client.fetch(query);
+  const post = await client.fetch(query);
 
-    return post;
+  return post;
 }
 
-
-const page = async ({params}: Params) => {
-    console.log(params, 'parms')
-    const post: Post = await getPost(params?.slug);
-    console.log(post, 'post')
+const page = async ({ params }: Params) => {
+  console.log(params, "parms");
+  const post: Post = await getPost(params?.slug);
+  console.log(post, "post");
 
   return (
     <div>
-        <Header title={post?.title} />
-        <div className='text-center'>
-            <span className={`${datefont?.className} text-purple-500`}>
-                {new Date(post?.publishedAt).toDateString()}
-            </span>
-            <div className='mt-5'>
-                {post?.tags?.map((tag)=> (
-                    <Link key={tag?._id} href={`/tag/${tag.slug.current}`}>
-                        <span className='mr-2 p-1 rounded-sm text-sm lowercase dark:bg-gray-950 border dark:border-gray-900'>
-                            #{tag.name}
-                        </span>
-                    </Link>
-                ))}
-            </div>
-
-            <div className={richTextStyles}>
-                <PortableText value={post?.body}/>
-            </div>
+      <Header title={post?.title} />
+      <div className="text-center">
+        <span className={`${datefont?.className} text-purple-500`}>
+          {new Date(post?.publishedAt).toDateString()}
+        </span>
+        <div className="mt-5">
+          {post?.tags?.map((tag) => (
+            <Link key={tag?._id} href={`/tags/${tag.slug.current}`}>
+              <span className="mr-2 p-1 rounded-sm text-sm lowercase dark:bg-gray-950 border dark:border-gray-900">
+                #{tag.name}
+              </span>
+            </Link>
+          ))}
         </div>
+
+        <div className={richTextStyles}>
+          <PortableText
+            value={post?.body}
+            components={myPortableTextComponents}
+          />
+        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
 export default page;
+
+const myPortableTextComponents = {
+  types: {
+    image: ({ value }: any) => (
+      <Image src={urlFor(value).url()} alt="Post" width={700} height={700} />
+    ),
+  },
+};
 
 const richTextStyles = `
     mt-14
@@ -85,9 +94,5 @@ const richTextStyles = `
     prose-li:leading-7
     prose-li:ml-4
     
-
-
-
-
-
-`
+    
+`;
