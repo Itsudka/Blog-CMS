@@ -26,6 +26,8 @@ async function getPostsByTag(tag: string) {
   return posts;
 }
 
+export const revalidate = 60;
+
 interface Params {
   params: {
     slug: string;
