@@ -1,0 +1,5 @@
+1. Como usuario, quiero ver una lista de elementos para revisar qué hay en el sistema.
+2. Como usuario, quiero agregar nuevos elementos para mantener el contenido actualizado.
+3. Como usuario, quiero editar elementos ya agregados para corregir errores.
+4. Como usuario, quiero eliminar elementos para mantener el sistema limpio.
+5. Como usuario, quiero recibir mensajes de éxito al completar una acción para estar informado.
